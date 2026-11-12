@@ -57,6 +57,7 @@ push 到 main → GitHub 触发 webhook → Sleazyfork 抓取 raw 文件 → @ve
 2. 保存后页面会生成本脚本专属的 Webhook URL 和 Secret，复制它们：
    - 到 GitHub 仓库 **Settings → Webhooks → Add webhook**：Payload URL 填该地址，Secret 填生成的密钥，Content type 选 `application/json`，只勾 **push** 事件；
    - 或者在发布时设置环境变量 `SLEAZYFORK_WEBHOOK_URL`，`publish.sh` 会自动完成 webhook 配置。
+   - ✅ 本仓库的 webhook 已配置完成（2026-11-12，脚本页：https://sleazyfork.org/zh-CN/scripts/605058 ），此步无需再做。
 3. 点一次「Sync now」验证 Sleazyfork 能抓到文件。
 
 ### 日常发布（改完代码一键发布）
