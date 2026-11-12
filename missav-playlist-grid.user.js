@@ -3,7 +3,8 @@
 // @namespace    https://missav.ws/
 // @version      1.0.0
 // @description  把 MissAV 播放列表(片单)页面改成和「中文字幕」等分类页一样的缩略图网格卡片样式
-// @author       you
+// @author       lingyuncrystal
+// @license      MIT
 // @match        https://missav.ws/playlists/*
 // @match        https://missav.ws/cn/playlists/*
 // @match        https://missav.com/playlists/*
