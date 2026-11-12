@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MissAV 片单网格化（仿分类页样式）
 // @namespace    https://missav.ws/
-// @version      1.0.1
+// @version      1.0.2
 // @description  把 MissAV 播放列表(片单)页面改成和「中文字幕」等分类页一样的缩略图网格卡片样式
 // @author       lingyuncrystal
 // @license      MIT
@@ -53,6 +53,17 @@
                 a.className = 'text-secondary group-hover:text-primary';
                 a.href = href;
                 a.textContent = label.textContent.trim();
+                // 截断用内联 !important 写死：部分增强脚本/移动端样式会把
+                // a 的 white-space 改回 normal 导致标题整段换行（手机端 BUG）
+                const trunc = (el) => {
+                    el.style.setProperty('display', 'block', 'important');
+                    el.style.setProperty('overflow', 'hidden', 'important');
+                    el.style.setProperty('text-overflow', 'ellipsis', 'important');
+                    el.style.setProperty('white-space', 'nowrap', 'important');
+                    el.style.setProperty('max-width', '100%', 'important');
+                };
+                trunc(titleDiv);
+                trunc(a);
                 titleDiv.appendChild(a);
                 // 放进 .thumbnail.group 内部，和分类页 DOM 结构一致
                 thumbnail.appendChild(titleDiv);

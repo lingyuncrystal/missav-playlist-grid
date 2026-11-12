@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.2] - 2026-11-12
+
+- 修复手机端标题整段换行溢出的问题：标题截断改为内联 `!important` 样式，不再受其他增强脚本/移动端样式表把链接 `white-space` 改回 `normal` 的影响
+
 ## [1.0.1] - 2026-11-12
 
 - 添加 `@icon`（MissAV 站点 favicon），脚本管理器与 Sleazyfork 页面显示图标
