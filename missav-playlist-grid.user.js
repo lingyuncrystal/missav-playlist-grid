@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MissAV 片单网格化（仿分类页样式）
 // @namespace    https://missav.ws/
-// @version      1.0.2
+// @version      1.0.3
 // @description  把 MissAV 播放列表(片单)页面改成和「中文字幕」等分类页一样的缩略图网格卡片样式
 // @author       lingyuncrystal
 // @license      MIT
@@ -44,7 +44,10 @@
             const form = li.querySelector(':scope > form');
             const label = form ? form.querySelector('label') : null;
 
-            // 4. 标题：把表单里的 label 换成分类页同款「图下方单行截断链接」
+            // 4. 标题：把表单里的 label 换成分类页同款「图下方标题链接」。
+            //    结构与分类页一致（.thumbnail 内的 .my-2.text-sm > a），
+            //    只用 class 不加内联样式：装了 MissAV Plus 的用户由其
+            //    「完整标题」等设置接管显示效果，未装则为单行截断。
             if (thumbnail && label) {
                 const href = (thumbnail.querySelector('a[href]') || {}).href || '#';
                 const titleDiv = document.createElement('div');
@@ -53,17 +56,6 @@
                 a.className = 'text-secondary group-hover:text-primary';
                 a.href = href;
                 a.textContent = label.textContent.trim();
-                // 截断用内联 !important 写死：部分增强脚本/移动端样式会把
-                // a 的 white-space 改回 normal 导致标题整段换行（手机端 BUG）
-                const trunc = (el) => {
-                    el.style.setProperty('display', 'block', 'important');
-                    el.style.setProperty('overflow', 'hidden', 'important');
-                    el.style.setProperty('text-overflow', 'ellipsis', 'important');
-                    el.style.setProperty('white-space', 'nowrap', 'important');
-                    el.style.setProperty('max-width', '100%', 'important');
-                };
-                trunc(titleDiv);
-                trunc(a);
                 titleDiv.appendChild(a);
                 // 放进 .thumbnail.group 内部，和分类页 DOM 结构一致
                 thumbnail.appendChild(titleDiv);
@@ -93,7 +85,33 @@
         });
 
         ul.dataset.gridified = '1';
+        relocateStrayFilterBars(ul);
+        observeInjections(ul);
         return true;
+    }
+
+    /**
+     * MissAV Plus 在找不到站内排序栏时，会把 .mv-filter-injected-header
+     * 注入到片单第一个卡片的包装 div 里，把该卡封面顶下去造成一行图片错位。
+     * 把误入卡片的筛选条移到列表容器外（ul 之前），恢复卡片对齐。
+     */
+    function relocateStrayFilterBars(ul) {
+        ul.querySelectorAll(':scope > li .mv-filter-injected-header').forEach((bar) => {
+            ul.parentElement.insertBefore(bar, ul);
+        });
+    }
+
+    /** MissAV Plus 是异步注入的，监听后续 DOM 变化，及时纠正新出现的错位。 */
+    function observeInjections(ul) {
+        let scheduled = false;
+        new MutationObserver(() => {
+            if (scheduled) return;
+            scheduled = true;
+            setTimeout(() => {
+                scheduled = false;
+                relocateStrayFilterBars(ul);
+            }, 200);
+        }).observe(ul, { childList: true, subtree: true });
     }
 
     // 页面是服务端渲染 + Alpine，正常情况下 document-idle 时 DOM 已就绪；
