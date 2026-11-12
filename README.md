@@ -34,7 +34,7 @@ https://missav.com/cn/playlists/*
 
 ## 版本
 
-当前版本：**1.0.0**，详见 [CHANGELOG](./CHANGELOG.md)。
+当前版本：**1.0.1**，详见 [CHANGELOG](./CHANGELOG.md)。
 
 ## 发布流程
 
